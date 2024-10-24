@@ -1,0 +1,87 @@
+{
+    "log": {
+        "level": "info",
+        "timestamp": true,
+        "disabled": false
+    },
+    "dns": {
+        "strategy": "prefer_ipv4",
+        "servers": [
+            {
+                "address": "https://1.1.1.1/dns-query",
+                "tag": "cloudflare-doh"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "type": "tproxy",
+            "tag": "tproxy-in",
+            "listen": "127.0.0.1",
+            "listen_port": 6969,
+            "sniff": true
+        }
+    ],
+    "outbounds": [
+        {
+            "type": "direct",
+            "tag": "direct-out"
+        },
+        {
+            "type": "dns",
+            "tag": "dns-out"
+        },
+        {
+            "type": "block",
+            "tag": "block-out"
+        },
+        {
+            "type": "vless",
+            "tag": "vless-out",
+            "server": "%server_address%",
+            "server_port": 443,
+            "uuid": "%vless_uuid%",
+            "flow": "xtls-rprx-vision",
+            "tls": {
+                "enabled": true,
+                "server_name": "%SNI%",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "%uTLS%"
+                },
+                "reality": {
+                    "enabled": true,
+                    "public_key": "%public_key%",
+                    "short_id": "%short_id%"
+                }
+            },
+            "packet_encoding": "xudp"
+        }
+    ],
+    "route": {
+        "rules": [
+            {
+                "protocol": [
+                    "dns"
+                ],
+                "outbound": "dns-out"
+            },
+            {
+                "inbound": [
+                    "tproxy-in"
+                ],
+                "domain_suffix": [
+                    "ifconfig.me"
+                ],
+                "outbound": "vless-out"
+            }
+        ],
+        "final": "direct-out"
+    },
+    "experimental": {
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "ui"
+        }
+    }
+}
