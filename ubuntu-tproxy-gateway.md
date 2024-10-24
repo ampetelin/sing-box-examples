@@ -103,6 +103,7 @@ sudo iptables -t mangle -I PREROUTING -p tcp -m socket -j DIVERT
 > В параметре -d правил:
 > 
 > iptables -t mangle -A SINGBOX_TPROXY -d 192.168.0.0/16 -p tcp -j RETURN
+> 
 > iptables -t mangle -A SINGBOX_TPROXY -d 192.168.0.0/16 -p udp ! --dport 53 -j RETURN
 > 
 > Используется адрес локальной сети. Если у вас используется отличная от 192.168.0.0/16, необходимо изменить значение
