@@ -73,7 +73,6 @@
             "server_port": 443,
             "uuid": "%vless_uuid%",
             "flow": "xtls-rprx-vision",
-            "network": "tcp",
             "tls": {
                 "enabled": true,
                 "server_name": "%SNI%",
@@ -87,8 +86,7 @@
                     "short_id": "%short_id%"
                 }
             },
-            "multiplex": {},
-            "transport": {}
+            "packet_encoding": "xudp"
         }
     ],
     "route": {
