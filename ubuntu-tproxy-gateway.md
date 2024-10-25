@@ -121,10 +121,10 @@ sudo netfilter-persistent save
 ```shell
 sudo nano /usr/lib/systemd/system/sing-box.service
 ```
-Добавляем в `[Service]` следующий `ExecStart` и `ExecStop`:
+Добавляем в `[Service]` следующий `ExecStartPost` и `ExecStopPost`:
 ```shell
-ExecStart=/sbin/ip rule add fwmark 1 table tproxy ; /sbin/ip route add local 0.0.0.0/0 dev lo table tproxy
-ExecStop=/sbin/ip rule del fwmark 1 table tproxy ; /sbin/ip route del local 0.0.0.0/0 dev lo table tproxy
+ExecStartPost=/sbin/ip rule add fwmark 1 table tproxy ; /sbin/ip route add local 0.0.0.0/0 dev lo table tproxy
+ExecStopPost=/sbin/ip rule del fwmark 1 table tproxy ; /sbin/ip route del local 0.0.0.0/0 dev lo table tproxy
 ```
 Применяем изменения
 ```shell
