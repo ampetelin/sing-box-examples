@@ -83,16 +83,16 @@ sudo systemctl enable sing-box
 ### Настройка Firewall & Routing
 Маркируем пакеты, которые будут приходить от устройств, использующих Raspberry Pi в качестве шлюза
 ```shell
-sudo iptables -t mangle -N SINGBOX_TPROXY
-sudo iptables -t mangle -A SINGBOX_TPROXY -d 127.0.0.1/32 -j RETURN
 sudo iptables -t mangle -A SINGBOX_TPROXY -d 224.0.0.0/4 -j RETURN 
 sudo iptables -t mangle -A SINGBOX_TPROXY -d 255.255.255.255/32 -j RETURN 
 sudo iptables -t mangle -A SINGBOX_TPROXY -d 192.168.0.0/16 -p tcp -j RETURN
 sudo iptables -t mangle -A SINGBOX_TPROXY -d 192.168.0.0/16 -p udp ! --dport 53 -j RETURN
 sudo iptables -t mangle -A SINGBOX_TPROXY -j RETURN -m mark --mark 0xff
-sudo iptables -t mangle -A SINGBOX_TPROXY -p udp -j TPROXY --on-ip 127.0.0.1 --on-port 6969 --tproxy-mark 1
+sudo iptables -t mangle -A SINGBOX_TPROXY -p tcp -j LOG --log-prefix "SINGBOX_TPROXY_TCP: "
 sudo iptables -t mangle -A SINGBOX_TPROXY -p tcp -j TPROXY --on-ip 127.0.0.1 --on-port 6969 --tproxy-mark 1
-sudo iptables -t mangle -A PREROUTING -j SINGBOX_TPROXY
+sudo iptables -t mangle -A SINGBOX_TPROXY -p udp -j LOG --log-prefix "SINGBOX_TPROXY_UDP: "
+sudo iptables -t mangle -A SINGBOX_TPROXY -p udp -j TPROXY --on-ip 127.0.0.1 --on-port 6969 --tproxy-mark 1
+sudo iptables -t mangle -A PREROUTING -i eth0 -j SINGBOX_TPROXY
 
 sudo iptables -t mangle -N DIVERT
 sudo iptables -t mangle -A DIVERT -j MARK --set-mark 1
@@ -106,7 +106,13 @@ sudo iptables -t mangle -I PREROUTING -p tcp -m socket -j DIVERT
 > 
 > iptables -t mangle -A SINGBOX_TPROXY -d 192.168.0.0/16 -p udp ! --dport 53 -j RETURN
 > 
-> Используется адрес локальной сети. Если у вас используется отличная от 192.168.0.0/16, необходимо изменить значение
+> используется адрес локальной сети. Если у вас используется отличная от 192.168.0.0/16, необходимо изменить значение
+> 
+> В параметре -i правила:
+> 
+> sudo iptables -t mangle -A PREROUTING -i eth0 -j SINGBOX_TPROXY
+> 
+> используется название сетевого интерфейса, выступающего в качестве шлюза для других устройств. Если у вас используется отличное от eth0, необходимо изменить значение
 
 Сохраняем правила
 ```shell
