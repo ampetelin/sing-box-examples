@@ -88,9 +88,7 @@ sudo iptables -t mangle -A SINGBOX_TPROXY -d 255.255.255.255/32 -j RETURN
 sudo iptables -t mangle -A SINGBOX_TPROXY -d 192.168.0.0/16 -p tcp -j RETURN
 sudo iptables -t mangle -A SINGBOX_TPROXY -d 192.168.0.0/16 -p udp ! --dport 53 -j RETURN
 sudo iptables -t mangle -A SINGBOX_TPROXY -j RETURN -m mark --mark 0xff
-sudo iptables -t mangle -A SINGBOX_TPROXY -p tcp -j LOG --log-prefix "SINGBOX_TPROXY_TCP: "
-sudo iptables -t mangle -A SINGBOX_TPROXY -p tcp -j TPROXY --on-ip 127.0.0.1 --on-port 6969 --tproxy-mark 1
-sudo iptables -t mangle -A SINGBOX_TPROXY -p udp -j LOG --log-prefix "SINGBOX_TPROXY_UDP: "
+sudo iptables -t mangle -A SINGBOX_TPROXY -p tcp -m multiport --dports 80,443 -j TPROXY --on-ip 127.0.0.1 --on-port 6969 --tproxy-mark 1
 sudo iptables -t mangle -A SINGBOX_TPROXY -p udp -j TPROXY --on-ip 127.0.0.1 --on-port 6969 --tproxy-mark 1
 sudo iptables -t mangle -A PREROUTING -i eth0 -j SINGBOX_TPROXY
 
