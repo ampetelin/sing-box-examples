@@ -83,6 +83,7 @@ sudo systemctl enable sing-box
 ### Настройка Firewall & Routing
 Маркируем пакеты, которые будут приходить от устройств, использующих Raspberry Pi в качестве шлюза
 ```shell
+sudo iptables -t mangle -N SINGBOX_TPROXY
 sudo iptables -t mangle -A SINGBOX_TPROXY -d 224.0.0.0/4 -j RETURN 
 sudo iptables -t mangle -A SINGBOX_TPROXY -d 255.255.255.255/32 -j RETURN 
 sudo iptables -t mangle -A SINGBOX_TPROXY -d 192.168.0.0/16 -p tcp -j RETURN
