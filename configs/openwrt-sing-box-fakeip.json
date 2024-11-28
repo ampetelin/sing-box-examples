@@ -8,34 +8,26 @@
         "servers": [
             {
                 "tag": "cloudflare-doh-server",
-                "address": "https://1.1.1.1/dns-query",
-                "detour": "direct-out"
+                "address": "https://1.1.1.1/dns-query"
             },
             {
                 "tag": "fakeip-server",
                 "address": "fakeip"
             }
         ],
-        "fakeip": {
-            "enabled": true,
-            "inet4_range": "198.18.0.0/15",
-            "inet6_range": "fc00::/18"
-        },
         "rules": [
             {
-                "query_type": [
-                    "A",
-                    "AAAA"
-                ],
                 "domain_suffix": [
-                    "ifconfig.me"
-                ],
-                "rule_set": [
-                    "youtube"
+                    "ifconfig.co"
                 ],
                 "server": "fakeip-server"
             }
-        ]
+        ],
+        "strategy": "ipv4_only",
+        "fakeip": {
+            "enabled": true,
+            "inet4_range": "198.18.0.0/15"
+        }
     },
     "inbounds": [
         {
@@ -46,8 +38,7 @@
             "mtu": 9000,
             "auto_route": false,
             "strict_route": false,
-            "sniff": true,
-            "sniff_override_destination": false
+            "sniff": true
         },
         {
             "type": "direct",
@@ -85,20 +76,10 @@
                     "public_key": "%public_key%",
                     "short_id": "%short_id%"
                 }
-            },
-            "packet_encoding": "xudp"
+            }
         }
     ],
     "route": {
-        "rule_set": [
-            {
-                "type": "remote",
-                "tag": "youtube",
-                "format": "binary",
-                "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/sing/geo/geosite/youtube.srs",
-                "download_detour": "direct-out"
-            }
-        ],
         "rules": [
             {
                 "protocol": [
@@ -112,6 +93,7 @@
                 ],
                 "outbound": "vless-out"
             }
-        ]
+        ],
+        "auto_detect_interface": true
     }
 }
