@@ -155,7 +155,7 @@ sudo systemctl restart sing-box
 ```json
 {
     "dns": {
-        "strategy": "prefer_ipv4",
+        "strategy": "ipv4_only",
         "servers": [
             {
                 "address": "https://1.1.1.1/dns-query",
