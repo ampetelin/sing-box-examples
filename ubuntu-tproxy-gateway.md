@@ -142,6 +142,10 @@ sudo nano /usr/lib/systemd/system/sing-box.service
 ExecStartPost=/sbin/ip rule add fwmark 1 table tproxy ; /sbin/ip route add local 0.0.0.0/0 dev lo table tproxy
 ExecStopPost=/sbin/ip rule del fwmark 1 table tproxy ; /sbin/ip route del local 0.0.0.0/0 dev lo table tproxy
 ```
+> [!WARNING]
+> При обновлении sing-box юнит `sing-box.service` перезаписывается на стандартный, 
+> не забудьте повторно добавить `ExecStartPost` и `ExecStopPost` после обновления
+
 Применяем изменения
 ```shell
 sudo systemctl daemon-reload
